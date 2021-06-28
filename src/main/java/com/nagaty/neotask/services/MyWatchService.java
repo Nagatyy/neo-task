@@ -1,5 +1,6 @@
 package com.nagaty.neotask.services;
 
+import com.nagaty.neotask.exceptions.InvalidWatchIDException;
 import com.nagaty.neotask.models.Discount;
 import com.nagaty.neotask.models.Watch;
 import com.nagaty.neotask.repositories.WatchRepository;
@@ -16,7 +17,7 @@ public class MyWatchService implements WatchService{
     DiscountService discountService;
 
     @Override
-    public float calculateCartPrice(ArrayList<String> listOfWatchIDs) {
+    public float calculateCartPrice(ArrayList<String> listOfWatchIDs) throws InvalidWatchIDException{
         float cartTotal = 0;
         // this map will hold the watchID mapped to occurrences in cart
         // this will make discount calculations easier
@@ -33,7 +34,7 @@ public class MyWatchService implements WatchService{
             List<Watch> watches = watchRepository.findByWatchID(watchID);
             // if no watch with that ID is found, throw an exception
             if(watches == null || watches.isEmpty()){
-                System.out.println("Invalid watch id found");
+                throw new InvalidWatchIDException();
             }
             // else, calculate the total price of this item (units included) and add it to the total
             // this calculation will also include any discounts if applicable
