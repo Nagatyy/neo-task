@@ -8,10 +8,8 @@ import java.util.Objects;
 /*---
 A discount on a watch will be represented using the Discount entity
 One watch can have multiple discounts active - hence the ManyToOne mapping
-A discount like '3 for 200' is essentially just a percentage discount with
-a minimum number of units required.
-Example: a watch with a unit price of 100 with a 3 for 200 discount is
-essentially just a 33.33% discount when a min of 3 watches are purchased.
+A discount like '3 for 200' is represented as min_units = 3, price_for_min_units = 200
+'2 for 120' => min_units = 2, price_for_min_units = 120
 ---*/
 
 @Entity
@@ -27,8 +25,8 @@ public class Discount {
     private Watch watch;     // a discount will refer to a watch
     @Column(name="min_units", nullable = false)
     private int minUnits;
-    @Column(nullable = false)
-    private float percentage;
+    @Column(name = "price_for_min_units", nullable = false)
+    private float priceForMinUnits;
 
     public int getDiscountID() {
         return discountID;
@@ -54,12 +52,12 @@ public class Discount {
         this.minUnits = minUnits;
     }
 
-    public float getPercentage() {
-        return percentage;
+    public void setPriceForMinUnits(float priceForMinUnits) {
+        this.priceForMinUnits = priceForMinUnits;
     }
 
-    public void setPercentage(float percentage) {
-        this.percentage = percentage;
+    public float getPriceForMinUnits() {
+        return priceForMinUnits;
     }
 
     @Override
@@ -68,7 +66,7 @@ public class Discount {
                 "discountID=" + discountID +
                 ", watch=" + watch +
                 ", minUnits=" + minUnits +
-                ", percentage=" + percentage +
+                ", priceForMinUnits=" + priceForMinUnits +
                 '}';
     }
 
@@ -77,11 +75,11 @@ public class Discount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Discount discount = (Discount) o;
-        return minUnits == discount.minUnits && Float.compare(discount.percentage, percentage) == 0 && watch.equals(discount.watch);
+        return minUnits == discount.minUnits && Float.compare(discount.priceForMinUnits, priceForMinUnits) == 0 && watch.equals(discount.watch);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(watch, minUnits, percentage);
+        return Objects.hash(watch, minUnits, priceForMinUnits);
     }
 }
